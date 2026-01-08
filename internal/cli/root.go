@@ -3,10 +3,25 @@ package cli
 import (
 	"fmt"
 
+	"github.com/asegev/vsphere-cli/internal/cli/clone"
+	"github.com/asegev/vsphere-cli/internal/cli/credentials"
+	"github.com/asegev/vsphere-cli/internal/cli/inspect"
+	"github.com/asegev/vsphere-cli/internal/cli/snapshot"
 	"github.com/asegev/vsphere-cli/pkg/config"
 	"github.com/asegev/vsphere-cli/pkg/output"
 	"github.com/spf13/cobra"
 )
+
+var longDescription = `vcli is a command-line tool for managing VMware vSphere environments.
+
+It provides commands for snapshot management, VM cloning, VM inspection,
+and credential validation.
+
+Authentication is configured via environment variables:
+  VCLI_HOST      - vCenter/ESXi host address
+  VCLI_USERNAME  - Authentication username
+  VCLI_PASSWORD  - Authentication password
+  VCLI_INSECURE  - Skip TLS verification (optional, default: false)`
 
 var (
 	// Global flags
@@ -26,16 +41,7 @@ var (
 var rootCmd = &cobra.Command{
 	Use:   "vcli",
 	Short: "A CLI tool for interacting with VMware vSphere/ESXi",
-	Long: `vcli is a command-line tool for managing VMware vSphere environments.
-
-It provides commands for snapshot management, VM cloning, VM inspection,
-and credential validation.
-
-Authentication is configured via environment variables:
-  VCLI_HOST      - vCenter/ESXi host address
-  VCLI_USERNAME  - Authentication username
-  VCLI_PASSWORD  - Authentication password
-  VCLI_INSECURE  - Skip TLS verification (optional, default: false)`,
+	Long:  longDescription,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		// Skip validation for commands that don't need it
 		if cmd.Name() == "help" || cmd.Name() == "vcli" {
@@ -96,14 +102,20 @@ func init() {
 	rootCmd.PersistentFlags().BoolVar(&flagInsecure, "insecure", false, "Skip TLS verification (overrides VCLI_INSECURE)")
 	rootCmd.PersistentFlags().StringVarP(&flagOutput, "output", "o", "table", "Output format (table, json, yaml)")
 	rootCmd.PersistentFlags().BoolVarP(&flagVerbose, "verbose", "v", false, "Verbose output")
+
+	// Add command groups
+	rootCmd.AddCommand(credentials.NewCredentialsCmd())
+	rootCmd.AddCommand(snapshot.NewSnapshotCmd())
+	rootCmd.AddCommand(clone.NewCloneCmd())
+	rootCmd.AddCommand(inspect.NewInspectCmd())
 }
 
-// GetConfig returns the global config
-func GetConfig() *config.Config {
+// Config returns the global config
+func Config() *config.Config {
 	return globalConfig
 }
 
-// GetFormat returns the global output format
-func GetFormat() output.Format {
+// Format returns the global output format
+func Format() output.Format {
 	return globalFormat
 }

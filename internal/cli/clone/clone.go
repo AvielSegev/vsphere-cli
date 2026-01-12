@@ -17,6 +17,7 @@ Available subcommands:
 	}
 
 	cmd.AddCommand(newCreateCmd())
+	cmd.AddCommand(newDeleteCmd())
 
 	return cmd
 }

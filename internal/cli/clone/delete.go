@@ -9,16 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	vmName       string
-	snapshotName string
-	cloneName    string
-)
-
-func newCreateCmd() *cobra.Command {
+func newDeleteCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create <source-vm> <new-name>",
-		Short: "Create a full linked of a VM",
+		Use:   "delete <source-vm> <new-name>",
+		Short: "delete a linked clone of a VM",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -40,27 +34,20 @@ func newCreateCmd() *cobra.Command {
 				return err
 			}
 
-			vm, err := finder.FindVMByName(ctx, vmName)
+			vm, err := finder.FindVMByName(ctx, cloneName)
 			if err != nil {
 				return err
 			}
 
-			snapshotRef, err := vm.FindSnapshot(ctx, snapshotName)
-			if err != nil {
+			req := vmware.RemoveLinkedCloneRequest{
+				VmMoid: vm.Reference().Value,
+			}
+
+			if err := dcm.RemoveLinkedClone(ctx, req); err != nil {
 				return err
 			}
 
-			req := vmware.CreateLinkedCloneRequest{
-				VmMoid:      vm.Reference().Value,
-				SnapshotRef: snapshotRef,
-				CloneName:   cloneName,
-			}
-
-			if err := dcm.CreateLinkedClone(ctx, req); err != nil {
-				return err
-			}
-
-			fmt.Printf("Successfuly cloned VM %s\n", vm.Reference().Value)
+			fmt.Printf("Successfuly delete VM %s\n", vm.Reference().Value)
 
 			return nil
 
@@ -70,5 +57,6 @@ func newCreateCmd() *cobra.Command {
 	cmd.Flags().StringVar(&vmName, "vmName", global.DefaultVmName, "from defaults.go if omitted")
 	cmd.Flags().StringVar(&snapshotName, "snapshotName", global.DefaultSnapshotName, "from defaults.go if omitted")
 	cmd.Flags().StringVar(&cloneName, "cloneName", global.DefaultClonedVmName, "from defaults.go if omitted")
+
 	return cmd
 }

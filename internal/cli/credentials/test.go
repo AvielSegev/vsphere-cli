@@ -2,16 +2,11 @@ package credentials
 
 import (
 	"fmt"
+	"github.com/asegev/vsphere-cli/internal/global"
 	"github.com/asegev/vsphere-cli/pkg/config"
 
 	vmware "github.com/kubev2v/assisted-migration-agent/pkg/vmware"
 	"github.com/spf13/cobra"
-)
-
-const (
-	defaultDatacenterMoid = "datacenter-3"
-	defaultClusterMoid    = "domain-c34"
-	defaultVmName         = "asegev-ubuntu-for-workflow-runs"
 )
 
 var requiredPrivileges = []string{
@@ -44,12 +39,12 @@ Exit code 0 on success, 1 on failure.`,
 				return err
 			}
 
-			dcm, err := vmware.NewDatacenterVMManager(ctx, c, defaultDatacenterMoid)
+			dcm, err := vmware.NewDatacenterVMManager(ctx, c, global.DefaultDatacenterMoid)
 			if err != nil {
 				return err
 			}
 
-			vm, err := dcm.FindVMByName(ctx, defaultVmName)
+			vm, err := dcm.FindVMByName(ctx, global.DefaultVmName)
 			if err != nil {
 				return err
 			}

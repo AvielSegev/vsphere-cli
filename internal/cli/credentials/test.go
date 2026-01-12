@@ -54,7 +54,7 @@ Exit code 0 on success, 1 on failure.`,
 				return err
 			}
 
-			if err := vmware.ValidateUserPrivilegesOnEntity(ctx, c.Client, vm.Reference(), requiredPrivileges, cfg.Username); err != nil {
+			if err := dcm.ValidateUserPrivilegesOnEntity(ctx, vm.Reference(), requiredPrivileges, cfg.Username); err != nil {
 				return err
 			}
 

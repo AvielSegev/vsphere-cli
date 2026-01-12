@@ -13,12 +13,8 @@ func NewSnapshotCmd() *cobra.Command {
 
 Available subcommands:
   create       - Create a new snapshot
-  list         - List snapshots for a VM
   tree         - Display snapshot hierarchy
-  delete       - Delete a specific snapshot
-  delete-all   - Delete all snapshots
-  revert       - Revert to a snapshot
-  consolidate  - Consolidate snapshot disks`,
+  delete       - Delete a specific snapshot`,
 	}
 
 	cmd.AddCommand(newCreateCmd())

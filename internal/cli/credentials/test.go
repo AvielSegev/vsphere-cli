@@ -44,17 +44,17 @@ Exit code 0 on success, 1 on failure.`,
 				return err
 			}
 
-			finder, err := vmware.NewFinder(ctx, c.Client, defaultDatacenterMoid)
+			dcm, err := vmware.NewDatacenterVMManager(ctx, c, defaultDatacenterMoid)
 			if err != nil {
 				return err
 			}
 
-			vm, err := finder.FindVMByName(ctx, defaultVmName)
+			vm, err := dcm.FindVMByName(ctx, defaultVmName)
 			if err != nil {
 				return err
 			}
 
-			if err := vmware.ValidateUserPrivileges(ctx, c.Client, vm.Reference(), requiredPrivileges, cfg.Username); err != nil {
+			if err := vmware.ValidateUserPrivilegesOnEntity(ctx, c.Client, vm.Reference(), requiredPrivileges, cfg.Username); err != nil {
 				return err
 			}
 

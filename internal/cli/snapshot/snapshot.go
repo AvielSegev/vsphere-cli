@@ -22,11 +22,8 @@ Available subcommands:
 	}
 
 	cmd.AddCommand(newCreateCmd())
-	cmd.AddCommand(newListCmd())
 	cmd.AddCommand(newTreeCmd())
 	cmd.AddCommand(newDeleteCmd())
-	cmd.AddCommand(newDeleteAllCmd())
-	cmd.AddCommand(newRevertCmd())
 	cmd.AddCommand(newConsolidateCmd())
 
 	return cmd

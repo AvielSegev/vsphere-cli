@@ -39,12 +39,17 @@ Exit code 0 on success, 1 on failure.`,
 				return err
 			}
 
-			dcm, err := vmware.NewDatacenterVMManager(ctx, c, global.DefaultDatacenterMoid)
+			dcm := vmware.NewVMManager(c)
 			if err != nil {
 				return err
 			}
 
-			vm, err := dcm.FindVMByName(ctx, global.DefaultVmName)
+			finder, err := vmware.NewDatacenterFinder(ctx, c.Client, global.DefaultDatacenterMoid)
+			if err != nil {
+				return err
+			}
+
+			vm, err := finder.FindVMByName(ctx, global.DefaultVmName)
 			if err != nil {
 				return err
 			}

@@ -41,7 +41,7 @@ func LoadFromEnv() (*Config, error) {
 		Host:     os.Getenv("VCLI_HOST"),
 		Username: os.Getenv("VCLI_USERNAME"),
 		Password: os.Getenv("VCLI_PASSWORD"),
-		Insecure: false,
+		Insecure: true,
 	}
 
 	if insecure := os.Getenv("VCLI_INSECURE"); insecure != "" {
